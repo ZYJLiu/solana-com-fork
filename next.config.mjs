@@ -2,11 +2,22 @@
  * @type {import('next').NextConfig}
  **/
 
-const withBundleAnalyzer = require("@next/bundle-analyzer");
-const { i18n } = require("./next-i18next.config");
-const rewritesAndRedirectsJson = require("./rewrites-redirects.json");
-const { builder } = require("@builder.io/sdk");
-const path = require("path");
+import withBundleAnalyzer from "@next/bundle-analyzer";
+import pkg from './next-i18next.config.js';
+const { i18n } = pkg;
+
+import rewritesAndRedirectsJson from "./rewrites-redirects.json" assert { type: "json" };
+import { builder } from "@builder.io/sdk";
+import path from "path";
+import { fileURLToPath } from 'url';
+import nextra from 'nextra';
+
+const withNextra = nextra({
+  theme: 'nextra-theme-docs',
+  themeConfig: './theme.config.tsx',
+});
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const securityHeaders = [
   {
@@ -41,8 +52,7 @@ const moduleExports = () => {
   const plugins = [
     withBundleAnalyzer({ enabled: process.env.ANALYZE === "true" }),
   ];
-  return plugins.reduce((acc, next) => next(acc), {
-    i18n,
+  let config = {
     reactStrictMode: true,
     swcMinify: true,
     productionBrowserSourceMaps: true,
@@ -113,11 +123,11 @@ const moduleExports = () => {
       );
       imageLoaderRule.exclude = /\.inline\.svg$/;
 
-      // Alias configuration
-      config.resolve.alias = {
-        ...config.resolve.alias,
-        react: path.resolve(__dirname, "node_modules/react"),
-      };
+      // // Alias configuration
+      // config.resolve.alias = {
+      //   ...config.resolve.alias,
+      //   react: path.resolve(process.cwd(), "node_modules/react"),
+      // };
 
       return config;
     },
@@ -178,7 +188,18 @@ const moduleExports = () => {
     experimental: {
       scrollRestoration: true,
     },
-  });
+  };
+
+  // Apply all plugins
+  config = plugins.reduce((acc, next) => next(acc), config);
+
+  // Apply withNextra
+  config = withNextra(config);
+
+  // Merge i18n config for non-Nextra pages
+  config.i18n = i18n;
+
+  return config;
 };
 
-module.exports = moduleExports;
+export default moduleExports;
