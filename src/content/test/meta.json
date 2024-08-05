@@ -1,0 +1,22 @@
+{
+  "title": "headless",
+  "root": true,
+  "pages": [
+    "---Guide---",
+    "index",
+    "test",
+    "test2",
+    "---Writing---",
+    "page-conventions",
+    "---API References---",
+    "page-tree",
+    "components",
+    "utils",
+    "mdx",
+    "---Sources---",
+    "source-api",
+    "content-collections/index",
+    "contentlayer",
+    "remote"
+  ]
+}

@@ -1,12 +1,11 @@
-/**
- * @type {import('next').NextConfig}
- **/
+import withBundleAnalyzer from "@next/bundle-analyzer";
+import pkg from './next-i18next.config.js';
+import rewritesAndRedirectsJson from "./rewrites-redirects.json" assert { type: "json" };
+import { builder } from "@builder.io/sdk";
+import createMDX from 'fumadocs-mdx/config';
 
-const withBundleAnalyzer = require("@next/bundle-analyzer");
-const { i18n } = require("./next-i18next.config");
-const rewritesAndRedirectsJson = require("./rewrites-redirects.json");
-const { builder } = require("@builder.io/sdk");
-const path = require("path");
+const withMDX = createMDX({ rootContentPath: "./src/content" });
+const { i18n } = pkg;
 
 const securityHeaders = [
   {
@@ -37,6 +36,9 @@ if (process.env.NEXT_PUBLIC_VERCEL_ENV === "preview") {
   });
 }
 
+/**
+ * @type {import('next').NextConfig}
+ **/
 const moduleExports = () => {
   const plugins = [
     withBundleAnalyzer({ enabled: process.env.ANALYZE === "true" }),
@@ -68,7 +70,6 @@ const moduleExports = () => {
         },
         ...rewritesAndRedirectsJson.redirects.map((redirect) => ({
           ...redirect,
-          // @ts-ignore
           permanent: redirect.permanent ?? true,
         })),
       ];
@@ -113,15 +114,8 @@ const moduleExports = () => {
       );
       imageLoaderRule.exclude = /\.inline\.svg$/;
 
-      // Alias configuration
-      config.resolve.alias = {
-        ...config.resolve.alias,
-        react: path.resolve(__dirname, "node_modules/react"),
-      };
-
       return config;
     },
-
     images: {
       remotePatterns: [
         {
@@ -178,7 +172,8 @@ const moduleExports = () => {
     experimental: {
       scrollRestoration: true,
     },
+    cssModules: true,
   });
 };
 
-module.exports = moduleExports;
+export default withMDX(moduleExports());

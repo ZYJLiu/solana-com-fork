@@ -1,0 +1,52 @@
+---
+title: Components 2
+description: Components
+full: false
+---
+
+## Overview
+
+This is a shared convention for organizing your pages, followed by all file-system based content sources including Fumadocs MDX.
+
+## File
+
+A [MDX](https://mdxjs.com) or Markdown file.
+
+### Frontmatter
+
+By default, it includes:
+
+| name          | description                                        |
+| ------------- | -------------------------------------------------- |
+| `title`       | The title of page                                  |
+| `description` | The description of page                            |
+| `icon`        | The name of icon, see [Icons](#icons)              |
+| `full`        | Fill all available space on the page (Fumadocs UI) |
+
+You may extend your content source to add additional properties.
+
+```mdx
+---
+title: My Page
+description: Best document ever
+icon: HomeIcon
+full: false
+---
+
+## Learn More
+```
+
+## Folder
+
+Organize multiple pages. When not specified, the display name will be generated from its folder name.
+
+Pages are sorted alphabetically, except for `index.mdx` which is always ordered at the top.
+
+To customise folders, see [Meta file](#meta).
+
+### Folder Group
+
+By default, putting a file into folder will change its slugs and generated page URL.
+You can use folder group to add a folder without impacting the slugs of child files.
+
+To create a folder group, wrap the folder name in parentheses.
